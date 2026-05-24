@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install anthropic boto3 schedule
+
+COPY monitor.py .
+COPY log-anomaly.py .
+COPY upgrade-advisor.py .
+COPY cost-monitor.py .
+
+CMD ["python", "-u", "monitor.py"]

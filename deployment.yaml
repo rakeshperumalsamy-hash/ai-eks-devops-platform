@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-eks-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-eks-app
+  template:
+    metadata:
+      labels:
+        app: ai-eks-app
+    spec:
+      containers:
+      - name: ai-eks-app
+        image: 355316256708.dkr.ecr.ap-south-1.amazonaws.com/ai-eks-app:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: anthropic-secret
+              key: ANTHROPIC_API_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-eks-app-service
+  namespace: default
+spec:
+  selector:
+    app: ai-eks-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: LoadBalancer

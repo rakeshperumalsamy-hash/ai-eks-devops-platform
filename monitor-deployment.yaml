@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-eks-monitor
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-eks-monitor
+  template:
+    metadata:
+      labels:
+        app: ai-eks-monitor
+    spec:
+      serviceAccountName: monitor-sa
+      containers:
+      - name: ai-eks-monitor
+        image: 355316256708.dkr.ecr.ap-south-1.amazonaws.com/ai-eks-monitor:latest
+        env:
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: anthropic-secret
+              key: ANTHROPIC_API_KEY
